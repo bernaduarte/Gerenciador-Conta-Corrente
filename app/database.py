@@ -1,3 +1,8 @@
+import os
+
+if os.environ.get("RESET_DB") == "true" and os.path.exists("bank.db"):
+    os.remove("bank.db")
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
