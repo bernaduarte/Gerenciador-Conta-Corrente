@@ -1,0 +1,6 @@
+env
+__pycache__
+.env
+bank.db
+.pytest_cache
+test_bank.db
