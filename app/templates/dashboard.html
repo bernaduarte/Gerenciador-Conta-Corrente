@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Bancário</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Dashboard Bancário</h1>
+        
+        <div id="feedback-message" class="feedback-message"></div>
+        
+        <div class="user-info">
+            <h2>Informações da Conta</h2>
+            <p><strong>Nome:</strong> <span id="user-name"></span></p>
+            <p><strong>Número da Conta:</strong> <span id="account-number"></span></p>
+            <p><strong>Tipo de Conta:</strong> <span id="user-type"></span></p>
+            <p><strong>Saldo:</strong> R$ <span id="account-balance"></span></p>
+        </div>
+
+        <div class="action-buttons">
+            <button class="deposit-btn" onclick="openModal('deposit-modal')">Depósito</button>
+            <button class="withdraw-btn" onclick="openModal('withdraw-modal')">Saque</button>
+            <button class="transfer-btn" onclick="openModal('transfer-modal')">Transferência</button>
+            <button id="manager-visit-btn" class="manager-btn" style="display:none;" onclick="openModal('manager-visit-modal')">Solicitar visita do gerente</button>
+        </div>
+
+        <div class="logout-container">
+            <form action="/auth/logout" method="post">
+                <button type="submit" class="logout-btn">Sair</button>
+            </form>
+        </div>
+
+        <h2>Extrato Bancário</h2>
+        <div class="statement-container">
+            <table class="statement-table">
+                <thead>
+                    <tr>
+                        <th>Data/Hora</th>
+                        <th>Descrição</th>
+                        <th>Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody id="statement-body">
+                </tbody>
+            </table>
+        </div>
+
+        <div id="deposit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('deposit-modal')">&times;</span>
+                <h2>Depósito</h2>
+                <form id="deposit-form" onsubmit="submitForm(event, 'deposit')">
+                    <div class="form-group">
+                        <label for="deposit-amount">Valor:</label>
+                        <input type="number" id="deposit-amount" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="closeModal('deposit-modal')">Cancelar</button>
+                        <button type="submit" class="confirm-btn">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="withdraw-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('withdraw-modal')">&times;</span>
+                <h2>Saque</h2>
+                <form id="withdraw-form" onsubmit="submitForm(event, 'withdrawal')">
+                    <div class="form-group">
+                        <label for="withdraw-amount">Valor:</label>
+                        <input type="number" id="withdraw-amount" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="closeModal('withdraw-modal')">Cancelar</button>
+                        <button type="submit" class="confirm-btn">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="transfer-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('transfer-modal')">&times;</span>
+                <h2>Transferência</h2>
+                <form id="transfer-form" onsubmit="submitForm(event, 'transfer')">
+                    <div class="form-group">
+                        <label for="transfer-account">Número da Conta Destino:</label>
+                        <input type="text" id="transfer-account" maxlength="5" pattern="\d{5}" required oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,5)">
+                    </div>
+                    <div class="form-group">
+                        <label for="transfer-amount">Valor:</label>
+                        <input type="number" id="transfer-amount" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="closeModal('transfer-modal')">Cancelar</button>
+                        <button type="submit" class="confirm-btn">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="manager-visit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('manager-visit-modal')">&times;</span>
+                <h2>Solicitar visita do gerente</h2>
+                <p>Deseja realmente solicitar a visita do gerente? Será debitado R$50,00 do seu saldo.</p>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeModal('manager-visit-modal')">Cancelar</button>
+                    <button type="button" class="confirm-btn" onclick="requestManagerVisit()">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

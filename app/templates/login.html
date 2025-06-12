@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/css/login.css" />
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="loginForm" novalidate>
+        <label for="account_number">Conta Corrente:</label>
+        <input type="text" id="account_number" name="account_number" maxlength="5" pattern="\d{5}" required>
+        <div class="error-message" id="accountError">A conta corrente deve ter exatamente 5 dígitos numéricos.</div>
+
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" maxlength="4" minlength="4" required>
+        <div class="error-message" id="passwordError">A senha deve ter exatamente 4 caracteres.</div>
+
+        <button type="submit" id="submitBtn">Entrar</button>
+        <div id="responseMessage"></div>
+    </form>
+    <script src="/static/js/login.js"></script>
+</body>
+</html>
