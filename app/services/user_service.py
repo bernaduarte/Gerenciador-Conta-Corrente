@@ -79,8 +79,6 @@ class UserService:
         if transaction_type_enum == TransactionType.WITHDRAWAL:
             if user.account.balance < amount and profile.upper() != "VIP":
                 raise ValueError("Saldo insuficiente para saque.")
-            if profile.upper() == "VIP":
-                self._apply_vip_negative_balance_penalty(user)
             result = self.user_repository.change_balance(user, amount, transaction_type_enum, "Saque realizado")
             return result
 
@@ -99,21 +97,17 @@ class UserService:
             if not self._can_transfer(amount, profile, user.account.balance):
                 raise ValueError("Limite de transferência ou saldo insuficiente")
 
-            if profile.upper() == "VIP":
-                self._apply_vip_negative_balance_penalty(user)
             result = self.user_repository.transfer(user, target_user, amount, tax)
             return result
 
         raise ValueError("Tipo de transação inválido.")
 
     def manager_visit(self, account_number: str, profile: str):
+        
         if profile.upper() != "VIP":
             raise PermissionError("Apenas usuários VIP podem solicitar visita do gerente.")
 
         user = self.user_repository.find_by_account_number(account_number)
         if not user or not user.account:
             raise ValueError("Usuário não encontrado.")
-
-        if user.account.balance < 50:
-            raise ValueError("Saldo insuficiente para solicitação.")
         return self.user_repository.change_balance(user, 50.0, TransactionType.WITHDRAWAL, "Solicitação de visita do gerente")
