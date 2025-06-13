@@ -10,6 +10,7 @@ class TransactionType(str, Enum):
     DEPOSIT = "deposit"
     TRANSFER = "transfer"
     WITHDRAWAL = "withdrawal"
+    NEGATIVE_BALANCE_FEE = "negative_balance_fee" 
 
 def now_brasilia():
     return datetime.now(pytz.timezone("America/Sao_Paulo"))

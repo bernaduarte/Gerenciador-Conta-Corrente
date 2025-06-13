@@ -97,3 +97,30 @@ class UserRepository(IUserRepository):
                 for t in transactions
             ]
         }
+    def apply_negative_balance_fee(self, user_id: int):
+        
+        from app.models.user import User
+        from app.models.transaction import Transaction, TransactionType
+        from datetime import datetime
+
+        user = self.db.query(User).filter(User.id == user_id).first()
+        if not user or user.user_type.value != "vip" or user.account.balance >= 0:
+            return
+
+        fee_amount = abs(user.account.balance) * 0.001
+
+        user.account.balance -= fee_amount
+
+        transaction = Transaction(
+            account_id=user.account.id,
+            value=-fee_amount,
+            type_transaction=TransactionType.NEGATIVE_BALANCE_FEE,
+            description="Débito por saldo negativo (0.1%)"
+        )
+
+        self.db.add(user.account) 
+        self.db.add(transaction)
+        self.db.commit()
+        self.db.refresh(user.account)
+        self.db.refresh(transaction)
+

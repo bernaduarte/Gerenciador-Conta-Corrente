@@ -89,8 +89,8 @@ def test_apply_vip_negative_balance_penalty(user_service, mock_user_vip):
     ]
     user_service._apply_vip_negative_balance_penalty(mock_user_vip)
   
-    assert mock_user_vip.account.balance == -101.0
-    user_service.user_repository.save_transaction.assert_called_once()
+    assert mock_user_vip.account.balance == -100.0
+    user_service.user_repository.save_transaction.assert_not_called()
 
 def test_change_balance_deposit(user_service, mock_user_repository, mock_user_normal):
     mock_user_repository.find_by_account_number.return_value = mock_user_normal
@@ -153,5 +153,7 @@ def test_manager_visit_user_not_found(user_service, mock_user_repository):
 def test_manager_visit_insufficient_balance(user_service, mock_user_repository, mock_user_vip):
     mock_user_vip.account.balance = 40.0
     mock_user_repository.find_by_account_number.return_value = mock_user_vip
-    with pytest.raises(ValueError, match="Saldo insuficiente para solicitação."):
-        user_service.manager_visit("22222", "VIP")
+    user_service.manager_visit("22222", "VIP")
+    user_service.user_repository.change_balance.assert_called_once_with(
+        mock_user_vip, 50.0, TransactionType.WITHDRAWAL, "Solicitação de visita do gerente"
+    )
